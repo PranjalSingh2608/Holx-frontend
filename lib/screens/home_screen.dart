@@ -1,6 +1,7 @@
 // ignore_for_file: unnecessary_null_comparison
 
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:holx/models/Products.dart';
 import 'package:holx/screens/product_detail_screen.dart';
 import 'package:holx/utils/http.dart';
@@ -95,7 +96,19 @@ class _HomeScreenState extends State<HomeScreen> {
                                   ),
                                   Padding(
                                     padding: EdgeInsets.all(8),
-                                    child: Text(prod.name),
+                                    child: Align(
+                                      alignment: Alignment.center,
+                                      child: Text(
+                                        prod.name,
+                                        style: GoogleFonts.raleway(
+                                          textStyle: TextStyle(
+                                            fontSize: 15,
+                                            fontWeight: FontWeight.bold,
+                                            color: Color(0xff333333),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
                                   ),
                                 ],
                               ),
