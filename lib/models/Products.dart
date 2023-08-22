@@ -6,8 +6,9 @@ class Product {
   final String description;
   final String imageUrl;
   final String phone;
+  final String price;
   final int user;
 
   Product(this.id, this.name, this.address, this.description, this.imageUrl,
-      this.phone,this.user);
+      this.phone,this.price,this.user);
 }
