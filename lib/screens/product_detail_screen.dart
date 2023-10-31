@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:holx/models/Products.dart';
-
+import 'package:holx/screens/chat_screen.dart';
 class ProductDetail extends StatelessWidget {
   final Product prod;
   const ProductDetail({required this.prod});
@@ -162,7 +162,13 @@ class ProductDetail extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             IconButton(
-              onPressed: () {},
+              onPressed: () {
+                Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) =>ChatPage(receiver: prod.user, prodId: prod.id)
+      ),
+    );
+              },
               icon: Icon(
                 size: 35,
                 Icons.chat_bubble_outline,
