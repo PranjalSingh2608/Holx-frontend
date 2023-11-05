@@ -6,6 +6,9 @@ import 'package:holx/models/Products.dart';
 import 'package:holx/screens/product_detail_screen.dart';
 import 'package:holx/utils/http.dart';
 
+import '../models/ChatUserProduct.dart';
+import 'chat_thread_screen.dart';
+
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
@@ -15,15 +18,39 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   late Future<List<Product>> products;
+  late List<ChatUserProduct> chatUserProducts = [];
   @override
   void initState() {
     super.initState();
     products = fetchProducts();
+    fetchChatMessagesByReceiverId(2).then((chatUserProducts) {
+      setState(() {
+        this.chatUserProducts = chatUserProducts;
+      });
+    });
   }
 
+  final AuthService authService = AuthService();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text('HolX'),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.exit_to_app),
+            onPressed: () async {
+              try {
+                await authService.logout();
+                Navigator.of(context).pushReplacementNamed('/login');
+              } catch (e) {
+                print('Logout error: $e');
+              }
+            },
+          ),
+        ],
+        backgroundColor: Color(0xff3EB489),
+      ),
       backgroundColor: Theme.of(context).backgroundColor,
       body: FutureBuilder(
         future: products,
@@ -127,6 +154,18 @@ class _HomeScreenState extends State<HomeScreen> {
             );
           }
         },
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) =>
+                    ChatThread(chatUserProducts: chatUserProducts)),
+          );
+        },
+        child: Icon(Icons.chat),
+        backgroundColor: Color(0xff3EB489),
       ),
     );
   }

@@ -1,6 +1,5 @@
 import 'dart:convert';
 // import 'dart:io';
-
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:holx/models/Chat.dart';
@@ -19,24 +18,42 @@ class ChatPage extends StatefulWidget {
 
 class _ChatPageState extends State<ChatPage> {
   late Future<List<ChatMessage>> chatmessages;
+  final authService = AuthService();
   late Future<List<ChatMessage>> chatmessagesowner;
   List<ChatMessage> allMessages = [];
   TextEditingController messageController = TextEditingController();
+  late int ID;
   @override
   void initState() {
     super.initState();
-    chatmessages = fetchChatMessages(widget.prodId, 1, widget.receiver);
-    chatmessagesowner = fetchChatMessages(widget.prodId, widget.receiver, 1);
-    chatmessages.then((toOwner) {
-      chatmessagesowner.then((fromOwner) {
-        setState(() {
-          allMessages = [...toOwner, ...fromOwner];
-          allMessages.sort((a, b) => a.timestamp.compareTo(b.timestamp));
-        });
-      });
-    });
+    loadSenderIdFromSharedPreferences();
   }
 
+  void loadSenderIdFromSharedPreferences() async {
+    final authService = AuthService();
+    final id = await authService.getId();
+    print("sender id");
+    print(id);
+    if (id != null) {
+      final senderId = int.parse(id);
+      setState(() {
+        ID = int.parse(id);
+        chatmessages =
+            fetchChatMessages(widget.prodId, senderId, widget.receiver);
+        chatmessagesowner =
+            fetchChatMessages(widget.prodId, widget.receiver, senderId);
+      });
+
+      chatmessages.then((toOwner) {
+        chatmessagesowner.then((fromOwner) {
+          setState(() {
+            allMessages = [...toOwner, ...fromOwner];
+            allMessages.sort((a, b) => a.timestamp.compareTo(b.timestamp));
+          });
+        });
+      });
+    }
+  }
   // IO.Socket? socket;
   // @override
   // void initState() {
@@ -85,7 +102,7 @@ class _ChatPageState extends State<ChatPage> {
   }
 
   Widget _buildMessageBubble(ChatMessage message) {
-    final isSentByUser = (message.sender == 1);
+    final isSentByUser = (message.sender == ID);
 
     return Padding(
       padding: const EdgeInsets.fromLTRB(8, 8, 15, 10),
@@ -123,14 +140,16 @@ class _ChatPageState extends State<ChatPage> {
               children: [
                 Text(
                   message.sender.toString(),
+                  textScaleFactor: 1.1,
                   style: TextStyle(
-                    color: Colors.black.withOpacity(0.5), // Faded black color
-                    fontWeight: FontWeight.bold,
-                  ),
+                      color: Colors.black.withOpacity(0.5), 
+                      fontWeight: FontWeight.bold,
+                      fontSize: 10),
                 ),
                 Text(
                   message.message,
-                  style: TextStyle(color: Colors.black),
+                  textScaleFactor: 1.1,
+                  style: TextStyle(color: Colors.black, fontSize: 15),
                 ),
                 Align(
                   alignment: Alignment.topRight,
@@ -138,9 +157,9 @@ class _ChatPageState extends State<ChatPage> {
                     message.timestamp.hour.toString() +
                         ':' +
                         message.timestamp.minute
-                            .toString(), // Replace with your message time
+                            .toString(), 
                     style: TextStyle(
-                      color: Colors.black.withOpacity(0.5), // Faded black color
+                      color: Colors.black.withOpacity(0.5),
                     ),
                   ),
                 ),
@@ -185,13 +204,15 @@ class _ChatPageState extends State<ChatPage> {
   }
 
   void _sendMessage() async {
+    print("sender id");
+    print(ID);
+    final token = await authService.getToken();
     final messageText = messageController.text.trim();
     if (messageText.isNotEmpty) {
-      final senderId = 1;
       final receiverId = widget.receiver;
 
       final newMessage = {
-        'sender': senderId,
+        'sender': ID,
         'receiver': receiverId,
         'product': widget.prodId,
         'message': messageText,
@@ -202,7 +223,7 @@ class _ChatPageState extends State<ChatPage> {
         final response = await http.post(
           Uri.parse('https://holx-qmve.onrender.com/chat/create/'),
           headers: {
-            'Authorization': 'Token f4eec197591f21724719f6454f8dbef94d25b815',
+            'Authorization': 'Token $token',
             'Content-Type': 'application/json',
           },
           body: jsonEncode(newMessage),
@@ -211,7 +232,7 @@ class _ChatPageState extends State<ChatPage> {
         print(widget.receiver);
         if (response.statusCode == 201) {
           setState(() {
-            chatmessages = fetchChatMessages(widget.prodId, 1, receiverId);
+            chatmessages = fetchChatMessages(widget.prodId, ID, receiverId);
             messageController.clear();
           });
         } else {
