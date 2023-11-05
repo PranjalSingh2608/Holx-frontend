@@ -5,6 +5,42 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../models/Chat.dart';
 import '../models/ChatUserProduct.dart';
 
+Future<String> fetchUsername(int userId) async {
+  final authService = AuthService();
+  final token = await authService.getToken();
+  final response = await http.get(
+    Uri.parse("https://holx-qmve.onrender.com/application/user/name/$userId/"),
+    headers: {
+      'Authorization': 'Token $token',
+    },
+  );
+
+  if (response.statusCode == 200) {
+    final Map<String, dynamic> data = jsonDecode(response.body);
+    return data['username'];
+  } else {
+    throw Exception('Failed to fetch username');
+  }
+}
+
+Future<String> fetchProductName(int productId) async {
+  final authService = AuthService();
+  final token = await authService.getToken();
+  final response = await http.get(
+    Uri.parse("https://holx-qmve.onrender.com/application/product/name/$productId/"),
+    headers: {
+      'Authorization': 'Token $token',
+    },
+  );
+
+  if (response.statusCode == 200) {
+    final Map<String, dynamic> data = jsonDecode(response.body);
+    return data['product_name'];
+  } else {
+    throw Exception('Failed to fetch product name');
+  }
+}
+
 Future<List<Product>> fetchProducts() async {
   final authService = AuthService();
   final token = await authService.getToken();
@@ -66,11 +102,11 @@ Future<List<ChatMessage>> fetchChatMessages(
   }
 }
 
-Future<List<ChatUserProduct>> fetchChatMessagesByReceiverId(
-    int receiverId) async {
+Future<List<ChatUserProduct>> fetchChatMessagesByReceiverId() async {
   final authService = AuthService();
   final token = await authService.getToken();
-  final apiUrl = 'https://holx-qmve.onrender.com/chat/fetch/$receiverId/';
+  final Id = await authService.getId();
+  final apiUrl = 'https://holx-qmve.onrender.com/chat/fetch/$Id/';
   final response = await http.get(
     Uri.parse(apiUrl),
     headers: {

@@ -18,19 +18,19 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   late Future<List<Product>> products;
-  late List<ChatUserProduct> chatUserProducts = [];
+  late List<ChatUserProduct> chatUserProducts=[];
   @override
   void initState() {
     super.initState();
     products = fetchProducts();
-    fetchChatMessagesByReceiverId(2).then((chatUserProducts) {
+    fetchChatMessagesByReceiverId().then((chatUserProducts) {
       setState(() {
         this.chatUserProducts = chatUserProducts;
       });
     });
   }
-
   final AuthService authService = AuthService();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -106,12 +106,9 @@ class _HomeScreenState extends State<HomeScreen> {
                               elevation: 3,
                               margin: EdgeInsets.all(10),
                               shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(
-                                    6.0), // Adjust the radius for smoother edges
+                                borderRadius: BorderRadius.circular(6.0),
                                 side: BorderSide(
-                                    width: 1.3,
-                                    color:
-                                        Color(0xff333333)), // Adds an outline
+                                    width: 1.3, color: Color(0xff333333)),
                               ),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.stretch,

@@ -6,11 +6,16 @@ import 'package:holx/models/Chat.dart';
 // import 'package:intl/intl.dart';
 
 import '../utils/http.dart';
-// import 'package:socket_io_client/socket_io_client.dart' as IO;
 
 class ChatPage extends StatefulWidget {
   final int receiver, prodId;
-  const ChatPage({required this.receiver, required this.prodId});
+  // final String receiverName, prodName;
+  const ChatPage(
+      {required this.receiver,
+      required this.prodId,
+      // required this.prodName,
+      // required this.receiverName
+      });
 
   @override
   State<ChatPage> createState() => _ChatPageState();
@@ -22,6 +27,7 @@ class _ChatPageState extends State<ChatPage> {
   late Future<List<ChatMessage>> chatmessagesowner;
   List<ChatMessage> allMessages = [];
   TextEditingController messageController = TextEditingController();
+  late String senderName;
   late int ID;
   @override
   void initState() {
@@ -29,15 +35,34 @@ class _ChatPageState extends State<ChatPage> {
     loadSenderIdFromSharedPreferences();
   }
 
+  Future<void> _refreshChatMessages() async {
+    final senderId = ID;
+    final receiverId = widget.receiver;
+    final prodId = widget.prodId;
+
+    final newMessages = await fetchChatMessages(prodId, senderId, receiverId);
+    final newMessagesOwner =
+        await fetchChatMessages(prodId, receiverId, senderId);
+
+    final updatedMessages = [...newMessages, ...newMessagesOwner];
+    updatedMessages.sort((a, b) => a.timestamp.compareTo(b.timestamp));
+
+    setState(() {
+      allMessages = updatedMessages;
+    });
+  }
+
   void loadSenderIdFromSharedPreferences() async {
     final authService = AuthService();
     final id = await authService.getId();
+    final name = await fetchUsername(int.parse(id.toString()));
     print("sender id");
     print(id);
     if (id != null) {
       final senderId = int.parse(id);
       setState(() {
         ID = int.parse(id);
+        senderName = name;
         chatmessages =
             fetchChatMessages(widget.prodId, senderId, widget.receiver);
         chatmessagesowner =
@@ -54,27 +79,6 @@ class _ChatPageState extends State<ChatPage> {
       });
     }
   }
-  // IO.Socket? socket;
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   connect();
-  // }
-
-  // void connect() {
-  //   socket = IO.io("ws://127.0.0.1:8000/ws/chat/", <String, dynamic>{
-  //     "transports": ["websocket"],
-  //     "autoconnect": false,
-  //   });
-  //   socket?.onConnect((data) {
-  //     print("Connected");
-  //   });
-  //   socket?.onConnectError((error) {
-  //     print("Connection Error: $error");
-  //   });
-  //   socket?.connect();
-  //
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -87,12 +91,17 @@ class _ChatPageState extends State<ChatPage> {
       body: Column(
         children: [
           Expanded(
-            child: ListView.builder(
-              itemCount: allMessages.length,
-              itemBuilder: (context, index) {
-                final message = allMessages[index];
-                return _buildMessageBubble(message);
+            child: RefreshIndicator(
+              onRefresh: () async {
+                await _refreshChatMessages();
               },
+              child: ListView.builder(
+                itemCount: allMessages.length,
+                itemBuilder: (context, index) {
+                  final message = allMessages[index];
+                  return _buildMessageBubble(message);
+                },
+              ),
             ),
           ),
           _buildMessage(),
@@ -142,7 +151,7 @@ class _ChatPageState extends State<ChatPage> {
                   message.sender.toString(),
                   textScaleFactor: 1.1,
                   style: TextStyle(
-                      color: Colors.black.withOpacity(0.5), 
+                      color: Colors.black.withOpacity(0.5),
                       fontWeight: FontWeight.bold,
                       fontSize: 10),
                 ),
@@ -156,8 +165,7 @@ class _ChatPageState extends State<ChatPage> {
                   child: Text(
                     message.timestamp.hour.toString() +
                         ':' +
-                        message.timestamp.minute
-                            .toString(), 
+                        message.timestamp.minute.toString(),
                     style: TextStyle(
                       color: Colors.black.withOpacity(0.5),
                     ),

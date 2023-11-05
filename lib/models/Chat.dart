@@ -1,3 +1,4 @@
+
 class ChatMessage {
   final int sender;
   final int receiver;
@@ -17,3 +18,4 @@ class ChatMessage {
     };
   }
 }
+

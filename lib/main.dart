@@ -19,7 +19,6 @@ class MyApp extends StatelessWidget {
   Future<bool> checkLoginState() async {
     return await authService.isLoggedIn();
   }
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -30,7 +29,7 @@ class MyApp extends StatelessWidget {
         backgroundColor: backgroundColor,
         textTheme: GoogleFonts.robotoTextTheme(
           Theme.of(context).textTheme.apply(
-                bodyColor: Colors.black,
+                bodyColor: Colors.black.withOpacity(0.8),
               ),
         ),
       ),

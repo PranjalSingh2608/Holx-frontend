@@ -20,7 +20,7 @@ class ChatThread extends StatelessWidget {
         itemCount: chatUserProducts.length,
         itemBuilder: (context, index) {
           final chat = chatUserProducts[index];
-          return Card(            
+          return Card(
             color: Color(0xffe5ffea),
             elevation: 4,
             margin: EdgeInsets.fromLTRB(15, 15, 15, 8),
@@ -35,6 +35,8 @@ class ChatThread extends StatelessWidget {
                     builder: (context) => ChatPage(
                       receiver: chat.sender_id,
                       prodId: chat.product_id,
+                      // prodName: chat.product_name,
+                      // receiverName: chat.sender_name,
                     ),
                   ),
                 );
@@ -44,7 +46,7 @@ class ChatThread extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    Text('Product ID: ${chat.product_id}'),
+                    Text('Product: ${chat.product_id}'),
                     Text('Sender ID: ${chat.sender_id}'),
                   ],
                 ),
