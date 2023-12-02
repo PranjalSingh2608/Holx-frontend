@@ -27,7 +27,8 @@ Future<String> fetchProductName(int productId) async {
   final authService = AuthService();
   final token = await authService.getToken();
   final response = await http.get(
-    Uri.parse("https://holx-qmve.onrender.com/application/product/name/$productId/"),
+    Uri.parse(
+        "https://holx-qmve.onrender.com/application/product/name/$productId/"),
     headers: {
       'Authorization': 'Token $token',
     },
@@ -61,7 +62,7 @@ Future<List<Product>> fetchProducts() async {
               result['name'],
               result['address'],
               result['description'],
-              result['image'] ?? "",
+              result['image'],
               result['phone'],
               result['price'],
               result['user'],
@@ -196,5 +197,48 @@ class AuthService {
     prefs.remove('token');
     prefs.remove('username');
     prefs.remove('user_id');
+  }
+}
+
+Future<void> addProduct(
+  String name,
+  String address,
+  String description,
+  String imageUrl,
+  String phone,
+  String price,
+) async {
+  final authService = AuthService();
+  final token = await authService.getToken();
+  print(imageUrl);
+  final apiUrl = 'https://holx-qmve.onrender.com/application/product/';
+  final Map<String, dynamic> productData = {
+    'name': name,
+    'address': address,
+    'description': description,
+    'image': imageUrl,
+    'phone': phone,
+    'price': price,
+  };
+
+  try {
+    final response = await http.post(
+      Uri.parse(apiUrl),
+      headers: {
+        'Authorization': 'Token $token',
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode(productData),
+    );
+
+    if (response.statusCode == 201) {
+      print(jsonEncode(productData));
+      print("Product added");
+    } else {
+      throw Exception('Failed to add the product.');
+    }
+  } catch (e) {
+    print('Error adding product: $e');
+    throw Exception('Failed to add the product.');
   }
 }

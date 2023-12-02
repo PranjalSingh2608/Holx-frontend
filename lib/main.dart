@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:holx/screens/add_product_screen.dart';
 import 'package:holx/screens/home_screen.dart';
 import 'package:holx/screens/login_screen.dart';
 import 'package:holx/screens/register_screen.dart';
@@ -53,6 +54,7 @@ class MyApp extends StatelessWidget {
         MyRoutes.HomeRoute: (context) => HomeScreen(),
         MyRoutes.RegisterRoute:(context) => RegisterScreen(),
         MyRoutes.LoginRoute:(context) => LoginScreen(),
+        MyRoutes.AddProductRoute:(context) => AddProduct(),
       },
     );
   }

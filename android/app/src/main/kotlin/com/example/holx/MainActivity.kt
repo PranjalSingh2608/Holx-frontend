@@ -1,4 +1,4 @@
-package com.example.holx
+package com.app.holx
 
 import io.flutter.embedding.android.FlutterActivity
 

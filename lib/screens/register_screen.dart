@@ -74,7 +74,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
               final password = passwordController.text;
               try {
                 await authService.registerUser(username, password);
-                Navigator.of(context).pushReplacementNamed('/home');
+                Navigator.of(context).pushReplacementNamed('/login');
               } catch (e) {
                 print('Registration error: $e');
               }

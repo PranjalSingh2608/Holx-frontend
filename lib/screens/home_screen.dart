@@ -18,7 +18,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   late Future<List<Product>> products;
-  late List<ChatUserProduct> chatUserProducts=[];
+  late List<ChatUserProduct> chatUserProducts = [];
   @override
   void initState() {
     super.initState();
@@ -29,6 +29,7 @@ class _HomeScreenState extends State<HomeScreen> {
       });
     });
   }
+
   final AuthService authService = AuthService();
 
   @override
@@ -46,6 +47,12 @@ class _HomeScreenState extends State<HomeScreen> {
               } catch (e) {
                 print('Logout error: $e');
               }
+            },
+          ),
+          IconButton(
+            icon: Icon(Icons.add),
+            onPressed: () {
+              Navigator.of(context).pushNamed('/addproduct');
             },
           ),
         ],
@@ -68,15 +75,6 @@ class _HomeScreenState extends State<HomeScreen> {
             return SingleChildScrollView(
               child: Column(
                 children: [
-                  Container(
-                    height: 200,
-                    padding: const EdgeInsets.all(15),
-                    child: Column(
-                      children: [
-                        // Divider(height: 60, thickness: 10, color: Colors.grey)
-                      ],
-                    ),
-                  ),
                   Padding(
                     padding: const EdgeInsets.all(10.0),
                     child: GridView.builder(
