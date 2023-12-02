@@ -92,131 +92,133 @@ class _AddProductState extends State<AddProduct> {
       backgroundColor: Theme.of(context).backgroundColor,
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Card(
-          color: Theme.of(context).backgroundColor,
-          elevation: 5,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(15.0),
-            side: BorderSide(width: 1.3, color: Color(0xff333333)),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              children: [
-                _imageFile != null
-                    ? Image.file(
-                        _imageFile!,
-                        height: 200,
-                        width: 200,
-                        fit: BoxFit.cover,
-                      )
-                    : Text('No image selected'),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    ElevatedButton(
-                      onPressed: () {
-                        pickImage(ImageSource.gallery);
-                      },
-                      child: Text('Gallery'),
-                      style: ElevatedButton.styleFrom(
-                        primary: Color(0xff3EB489).withOpacity(0.8),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30.0),
+        child: SingleChildScrollView(
+          child: Card(
+            color: Theme.of(context).backgroundColor,
+            elevation: 5,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(15.0),
+              side: BorderSide(width: 1.3, color: Color(0xff333333)),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                children: [
+                  _imageFile != null
+                      ? Image.file(
+                          _imageFile!,
+                          height: 200,
+                          width: 200,
+                          fit: BoxFit.cover,
+                        )
+                      : Text('No image selected'),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      ElevatedButton(
+                        onPressed: () {
+                          pickImage(ImageSource.gallery);
+                        },
+                        child: Text('Gallery'),
+                        style: ElevatedButton.styleFrom(
+                          primary: Color(0xff3EB489).withOpacity(0.8),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30.0),
+                          ),
+                          elevation: 4,
                         ),
-                        elevation: 4,
                       ),
-                    ),
-                    ElevatedButton(
-                      onPressed: () {
-                        pickImage(ImageSource.camera);
-                      },
-                      child: Text('Camera'),
-                      style: ElevatedButton.styleFrom(
-                        primary: Color(0xff3EB489).withOpacity(0.8),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30.0),
+                      ElevatedButton(
+                        onPressed: () {
+                          pickImage(ImageSource.camera);
+                        },
+                        child: Text('Camera'),
+                        style: ElevatedButton.styleFrom(
+                          primary: Color(0xff3EB489).withOpacity(0.8),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30.0),
+                          ),
+                          elevation: 4,
                         ),
-                        elevation: 4,
                       ),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 20),
-                TextField(
-                  controller: nameController,
-                  decoration: InputDecoration(
-                    labelText: 'Product Name',
-                    border: OutlineInputBorder(
-                      borderSide:
-                          BorderSide(width: 1.3, color: Color(0xff333333)),
-                    ),
-                    contentPadding: EdgeInsets.all(12),
+                    ],
                   ),
-                ),
-                SizedBox(height: 10),
-                TextField(
-                  controller: addressController,
-                  decoration: InputDecoration(
-                    labelText: 'Address',
-                    border: OutlineInputBorder(
-                      borderSide:
-                          BorderSide(width: 1.3, color: Color(0xff333333)),
+                  SizedBox(height: 20),
+                  TextField(
+                    controller: nameController,
+                    decoration: InputDecoration(
+                      labelText: 'Product Name',
+                      border: OutlineInputBorder(
+                        borderSide:
+                            BorderSide(width: 1.3, color: Color(0xff333333)),
+                      ),
+                      contentPadding: EdgeInsets.all(12),
                     ),
-                    contentPadding: EdgeInsets.all(12),
                   ),
-                ),
-                SizedBox(height: 10),
-                TextField(
-                  controller: descriptionController,
-                  decoration: InputDecoration(
-                    labelText: 'Description',
-                    border: OutlineInputBorder(
-                      borderSide:
-                          BorderSide(width: 1.3, color: Color(0xff333333)),
+                  SizedBox(height: 10),
+                  TextField(
+                    controller: addressController,
+                    decoration: InputDecoration(
+                      labelText: 'Address',
+                      border: OutlineInputBorder(
+                        borderSide:
+                            BorderSide(width: 1.3, color: Color(0xff333333)),
+                      ),
+                      contentPadding: EdgeInsets.all(12),
                     ),
-                    contentPadding: EdgeInsets.all(12),
                   ),
-                ),
-                SizedBox(height: 10),
-                TextField(
-                  controller: phoneController,
-                  decoration: InputDecoration(
-                    labelText: 'Phone',
-                    border: OutlineInputBorder(
-                      borderSide:
-                          BorderSide(width: 1.3, color: Color(0xff333333)),
+                  SizedBox(height: 10),
+                  TextField(
+                    controller: descriptionController,
+                    decoration: InputDecoration(
+                      labelText: 'Description',
+                      border: OutlineInputBorder(
+                        borderSide:
+                            BorderSide(width: 1.3, color: Color(0xff333333)),
+                      ),
+                      contentPadding: EdgeInsets.all(12),
                     ),
-                    contentPadding: EdgeInsets.all(12),
                   ),
-                ),
-                SizedBox(height: 10),
-                TextField(
-                  controller: priceController,
-                  decoration: InputDecoration(
-                    labelText: 'Price',
-                    border: OutlineInputBorder(
-                      borderSide:
-                          BorderSide(width: 1.3, color: Color(0xff333333)),
+                  SizedBox(height: 10),
+                  TextField(
+                    controller: phoneController,
+                    decoration: InputDecoration(
+                      labelText: 'Phone',
+                      border: OutlineInputBorder(
+                        borderSide:
+                            BorderSide(width: 1.3, color: Color(0xff333333)),
+                      ),
+                      contentPadding: EdgeInsets.all(12),
                     ),
-                    contentPadding: EdgeInsets.all(12),
                   ),
-                ),
-                SizedBox(height: 20),
-                ElevatedButton(
-                  onPressed: () async {
-                    await uploadImageToCloudinary(_imageFile!);
-                  },
-                  child: Text('Add Product'),
-                  style: ElevatedButton.styleFrom(
-                    primary: Color(0xff3EB489).withOpacity(0.8),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30.0),
+                  SizedBox(height: 10),
+                  TextField(
+                    controller: priceController,
+                    decoration: InputDecoration(
+                      labelText: 'Price',
+                      border: OutlineInputBorder(
+                        borderSide:
+                            BorderSide(width: 1.3, color: Color(0xff333333)),
+                      ),
+                      contentPadding: EdgeInsets.all(12),
                     ),
-                    elevation: 4,
                   ),
-                ),
-              ],
+                  SizedBox(height: 20),
+                  ElevatedButton(
+                    onPressed: () async {
+                      await uploadImageToCloudinary(_imageFile!);
+                    },
+                    child: Text('Add Product'),
+                    style: ElevatedButton.styleFrom(
+                      primary: Color(0xff3EB489).withOpacity(0.8),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30.0),
+                      ),
+                      elevation: 4,
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ),

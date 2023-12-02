@@ -100,7 +100,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
               elevation: 4,
             ),
           ),
-          SizedBox(height: 16), 
+          SizedBox(height: 16),
           TextButton(
             onPressed: () {
               Navigator.of(context).pushReplacementNamed('/login');
