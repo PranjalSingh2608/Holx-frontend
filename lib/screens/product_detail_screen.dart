@@ -186,7 +186,20 @@ class ProductDetail extends StatelessWidget {
               color: Colors.black,
             ),
             IconButton(
-              onPressed: () {},
+              onPressed: () {
+                ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                          content: const Text(
+                                            "Payment Functionality not started yet",
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                            ),
+                                          ),
+                                          backgroundColor:
+                                             Color(0xff3EB489),
+                                        ),
+                                    );
+              },
               icon: Icon(
                 Icons.payment_outlined,
                 size: 35,
