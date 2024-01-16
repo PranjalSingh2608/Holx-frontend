@@ -92,8 +92,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 child: isLoading
                     ? Center(
                         child: CircularProgressIndicator(
-                          valueColor:
-                              AlwaysStoppedAnimation<Color>(Color(0xff3EB489)),
+                          color:Color(0xff3EB489),
                         ),
                       )
                     :   Text(
