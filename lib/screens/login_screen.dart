@@ -87,6 +87,9 @@ class _LoginScreenState extends State<LoginScreen> {
                         final token =
                             await authService.loginUser(username, password);
                         if (token != null) {
+                          setState(() {
+                            isLoading = false;
+                          });
                           print("success");
                           Navigator.of(context).pushReplacementNamed('/home');
                         } else {
@@ -94,10 +97,6 @@ class _LoginScreenState extends State<LoginScreen> {
                         }
                       } catch (e) {
                         print('Login error: $e');
-                      } finally {
-                        setState(() {
-                          isLoading = false;
-                        });
                       }
                     },
               child: Container(
@@ -106,10 +105,10 @@ class _LoginScreenState extends State<LoginScreen> {
                 child: Center(
                   child: isLoading
                       ? Center(
-                        child: CircularProgressIndicator(
+                          child: CircularProgressIndicator(
                             color: Color(0xff3EB489),
                           ),
-                      )
+                        )
                       : Text(
                           'Login',
                           style: TextStyle(
