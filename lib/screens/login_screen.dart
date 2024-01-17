@@ -87,9 +87,6 @@ class _LoginScreenState extends State<LoginScreen> {
                         final token =
                             await authService.loginUser(username, password);
                         if (token != null) {
-                          setState(() {
-                            isLoading = false;
-                          });
                           print("success");
                           Navigator.of(context).pushReplacementNamed('/home');
                         } else {
