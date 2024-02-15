@@ -1,210 +1,246 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:holx/models/Products.dart';
 import 'package:holx/screens/chat_screen.dart';
+import 'package:holx/utils/http.dart';
 
+import '../models/ChatUserProduct.dart';
+import '../utils/widgets.dart';
+import 'chat_thread_screen.dart';
 
-class ProductDetail extends StatelessWidget {
+class ProductDetail extends StatefulWidget {
   final Product prod;
   const ProductDetail({required this.prod});
 
   @override
+  State<ProductDetail> createState() => _ProductDetailState();
+}
+
+class _ProductDetailState extends State<ProductDetail> {
+  final AuthService authService = AuthService();
+  late List<ChatUserProduct> chatUserProducts = [];
+  @override
+  void initState() {
+    super.initState();
+    fetchChatMessagesByReceiverId().then((chatUserProducts) {
+      setState(() {
+        this.chatUserProducts = chatUserProducts;
+      });
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme.of(context).backgroundColor,
-      appBar: AppBar(
-        backgroundColor: Color(0xff3EB489),
-      ),
-      body: ListView(
-        children: [
-          Container(
-            width: MediaQuery.of(context).size.width,
-            child: Stack(
-              children: [
-                Column(
+      backgroundColor: Color(0xFFF4F4F4),
+      body: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Card(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15.0),
+            side: BorderSide(width: 1.3, color: Color(0xff333333)),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Container(
+                height: 300,
+                decoration: BoxDecoration(
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.3),
+                      spreadRadius: 2,
+                      blurRadius: 5,
+                      offset: Offset(0, 3),
+                    ),
+                  ],
+                ),
+                child: Stack(
                   children: [
-                    Padding(
-                        padding: const EdgeInsets.all(8),
-                        child: Container(
-                          height: 200,
-                          width: MediaQuery.of(context).size.width,
-                          child: Card(
-                            semanticContainer: true,
-                            clipBehavior: Clip.antiAliasWithSaveLayer,
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10.0)),
-                            elevation: 5,
-                            child: Image.network(prod.imageUrl,
-                                // ignore: prefer_interpolation_to_compose_strings
-                                fit: BoxFit.cover),
-                          ),
-                        )),
-                    Padding(
-                      padding: const EdgeInsets.all(8),
-                      child: Text(
-                        prod.name.toString(),
-                        style: GoogleFonts.raleway(
-                          textStyle: TextStyle(
-                            fontSize: 25,
-                            fontWeight: FontWeight.bold,
-                            color: Color(0xff333333),
-                          ),
-                        ),
-                      ),
-                    ),
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      child: Padding(
-                        padding: EdgeInsets.all(10),
-                        child: Text(
-                          "Description",
-                          style: GoogleFonts.raleway(
-                            textStyle: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                              color: Color(0xff333333),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(
-                          left: 15, right: 15, bottom: 15),
+                    ClipRRect(
                       child: Container(
-                        width: MediaQuery.of(context).size.width,
-                        child: Text(
-                          prod.description.toString(),
-                          style: GoogleFonts.raleway(
-                            textStyle: TextStyle(
-                              fontSize: 15,
-                              fontWeight: FontWeight.normal,
-                              color: Color(0xff333333),
+                        decoration: BoxDecoration(
+                          image: DecorationImage(
+                            image: NetworkImage(widget.prod.imageUrl),
+                            fit: BoxFit.cover,
+                            colorFilter: ColorFilter.mode(
+                              Colors.black.withOpacity(0.7),
+                              BlendMode.darken,
                             ),
                           ),
                         ),
                       ),
                     ),
-                    Align(
-                      alignment: Alignment.centerLeft,
+                    Center(
                       child: Padding(
-                        padding: EdgeInsets.all(10),
+                        padding: const EdgeInsets.all(16.0),
                         child: Text(
-                          "Reach out to us at:",
-                          style: GoogleFonts.raleway(
+                          widget.prod.name,
+                          style: GoogleFonts.poppins(
                             textStyle: TextStyle(
-                              fontSize: 20,
+                              fontSize: 24,
                               fontWeight: FontWeight.bold,
-                              color: Color(0xff333333),
+                              color: Colors.white,
                             ),
                           ),
-                        ),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(
-                          left: 15, right: 15, bottom: 15),
-                      child: Container(
-                        width: MediaQuery.of(context).size.width,
-                        child: Text(
-                          prod.address.toString(),
-                          style: GoogleFonts.raleway(
-                            textStyle: TextStyle(
-                              fontSize: 15,
-                              fontWeight: FontWeight.normal,
-                              color: Color(0xff333333),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      child: Padding(
-                        padding: EdgeInsets.all(10),
-                        child: Row(
-                          children: [
-                            Icon(
-                              Icons.phone_android_outlined,
-                            ),
-                            Text(
-                              "Call us at: ",
-                              style: GoogleFonts.raleway(
-                                textStyle: TextStyle(
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold,
-                                  color: Color(0xff333333),
-                                ),
-                              ),
-                            ),
-                            Text(
-                              prod.phone,
-                              style: GoogleFonts.raleway(
-                                textStyle: TextStyle(
-                                  fontSize: 20,
-                                  color: Color(0xff333333),
-                                ),
-                              ),
-                            ),
-                          ],
                         ),
                       ),
                     ),
                   ],
                 ),
-              ],
-            ),
+              ),
+              Expanded(
+                child: Container(
+                  padding: EdgeInsets.all(16),
+                  color: Colors.white,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Text(
+                        "Description",
+                        style: GoogleFonts.poppins(
+                          textStyle: TextStyle(
+                            fontSize: 30,
+                            fontWeight: FontWeight.bold,
+                            color: Color(0xFF333333),
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 16),
+                      Text(
+                        widget.prod.description,
+                        style: GoogleFonts.poppins(
+                          textStyle: TextStyle(
+                            fontSize: 18,
+                            color: Color(0xFF666666),
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 16),
+                      Text(
+                        "Reach out to us at:",
+                        style: GoogleFonts.poppins(
+                          textStyle: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: Color(0xFF333333),
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 8),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.location_on,
+                            color: Color(0xFF333333),
+                          ),
+                          SizedBox(width: 8),
+                          Text(
+                            widget.prod.address,
+                            style: GoogleFonts.poppins(
+                              textStyle: TextStyle(
+                                fontSize: 18,
+                                color: Color(0xFF666666),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 8),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.phone_android,
+                            color: Color(0xFF333333),
+                          ),
+                          SizedBox(width: 8),
+                          Text(
+                            widget.prod.phone,
+                            style: GoogleFonts.poppins(
+                              textStyle: TextStyle(
+                                fontSize: 18,
+                                color: Color(0xFF666666),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
           ),
-        ],
+        ),
       ),
       bottomNavigationBar: BottomAppBar(
         elevation: 5,
-        color: Color(0xff3EB489),
+        color: Color(0xFFF4F4F4),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             IconButton(
-              onPressed: () async{
-                // final productName = await fetchProductName(prod.id);
-                // final userName = await fetchUsername(prod.user);
+              onPressed: () async {
                 Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) =>ChatPage(receiver: prod.user, prodId: prod.id
-        // ,receiverName: userName,prodName: productName,
-        )
-      ),
-    );
+                  MaterialPageRoute(
+                    builder: (context) => ChatPage(
+                      receiver: widget.prod.user,
+                      prodId: widget.prod.id,
+                    ),
+                  ),
+                );
               },
-              icon: Icon(
-                size: 35,
-                Icons.chat_bubble_outline,
-                color: Color(0xfff5fffa),
-              ),
-            ),
-            Container(
-              height: 50,
-              color: Colors.black,
+              icon: Icon(Icons.chat, size: 35, color: Color(0xFF3EB489)),
             ),
             IconButton(
               onPressed: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(
-                                          content: const Text(
-                                            "Payment Functionality not started yet",
-                                            style: TextStyle(
-                                              color: Colors.white,
-                                            ),
-                                          ),
-                                          backgroundColor:
-                                             Color(0xff3EB489),
-                                        ),
-                                    );
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          ChatThread(chatUserProducts: chatUserProducts)),
+                );
               },
               icon: Icon(
-                Icons.payment_outlined,
+                CupertinoIcons.envelope,
                 size: 35,
-                color: Color(0xfff5fffa),
+                color: Color(0xFF3EB489),
               ),
+            ),
+            IconButton(
+              icon: Icon(
+                Icons.add,
+                size: 35,
+                color: Color(0xFF3EB489),
+              ),
+              onPressed: () {
+                Navigator.of(context).pushNamed('/addproduct');
+              },
+            ),
+            IconButton(
+              icon: Icon(
+                Icons.exit_to_app,
+                size: 35,
+                color: Color(0xFF3EB489),
+              ),
+              onPressed: () async {
+                bool logoutConfirmed =
+                    await showLogoutConfirmationDialog(context);
+
+                if (logoutConfirmed) {
+                  try {
+                    await authService.logout();
+                    Navigator.of(context).pushReplacementNamed('/login');
+                  } catch (e) {
+                    print('Logout error: $e');
+                    Widgets.showErrorFlushbar(
+                        context, "Error Logging out", "Please try again");
+                  }
+                }
+              },
             ),
           ],
         ),

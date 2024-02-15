@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import '../utils/widgets.dart';
 import '../utils/http.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -50,7 +50,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                     ),
                   ),
-                  SizedBox(height: 16), // Add some vertical spacing
+                  SizedBox(height: 16),
                   TextField(
                     controller: passwordController,
                     decoration: InputDecoration(
@@ -90,10 +90,24 @@ class _LoginScreenState extends State<LoginScreen> {
                           print("success");
                           Navigator.of(context).pushReplacementNamed('/home');
                         } else {
-                          print('Login failed');
+                          Widgets.showErrorFlushbar(
+                              context,
+                              "Please check your user name and Password",
+                              "Error logging in");
                         }
                       } catch (e) {
                         print('Login error: $e');
+                        Widgets.showErrorFlushbar(
+                            context,
+                            "Please check your user name and Password",
+                            "Error logging in");
+                      } finally {
+                        setState(() {
+                          isLoading = false;
+                        });
+
+                        usernameController.clear();
+                        passwordController.clear();
                       }
                     },
               child: Container(

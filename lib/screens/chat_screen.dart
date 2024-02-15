@@ -10,12 +10,12 @@ import '../utils/http.dart';
 class ChatPage extends StatefulWidget {
   final int receiver, prodId;
   // final String receiverName, prodName;
-  const ChatPage(
-      {required this.receiver,
-      required this.prodId,
-      // required this.prodName,
-      // required this.receiverName
-      });
+  const ChatPage({
+    required this.receiver,
+    required this.prodId,
+    // required this.prodName,
+    // required this.receiverName
+  });
 
   @override
   State<ChatPage> createState() => _ChatPageState();
@@ -180,33 +180,37 @@ class _ChatPageState extends State<ChatPage> {
   }
 
   Widget _buildMessage() {
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 8),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(20), // Adjust the radius as needed
-        border: Border.all(
-          color: Color(0xff3EB489),
+    return Padding(
+      padding: const EdgeInsets.all(10.0),
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 8),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius:
+              BorderRadius.circular(25), 
+          border: Border.all(
+            color: Color(0xff3EB489),
+          ),
         ),
-      ),
-      margin: EdgeInsets.all(8), // Add margin to create spacing
-      child: Row(
-        children: [
-          Expanded(
-            child: TextField(
-              controller: messageController,
-              decoration: InputDecoration.collapsed(
-                hintText: 'Type a message...',
+        margin: EdgeInsets.all(8), 
+        child: Row(
+          children: [
+            Expanded(
+              child: TextField(
+                controller: messageController,
+                decoration: InputDecoration.collapsed(
+                  hintText: 'Type a message...',
+                ),
               ),
             ),
-          ),
-          IconButton(
-            icon: Icon(Icons.send),
-            onPressed: () {
-              _sendMessage();
-            },
-          ),
-        ],
+            IconButton(
+              icon: Icon(Icons.send),
+              onPressed: () {
+                _sendMessage();
+              },
+            ),
+          ],
+        ),
       ),
     );
   }

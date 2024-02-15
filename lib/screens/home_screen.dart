@@ -1,12 +1,11 @@
-// ignore_for_file: unnecessary_null_comparison
-
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:holx/models/Products.dart';
+import 'package:holx/screens/chat_screen.dart';
 import 'package:holx/screens/product_detail_screen.dart';
 import 'package:holx/utils/http.dart';
 
 import '../models/ChatUserProduct.dart';
+import '../utils/widgets.dart';
 import 'chat_thread_screen.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -18,16 +17,14 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   late Future<List<Product>> products;
+  late PageController _pageController;
   late List<ChatUserProduct> chatUserProducts = [];
+  Product? currprod;
   @override
   void initState() {
+    _pageController = PageController();
     super.initState();
     products = fetchProducts();
-    fetchChatMessagesByReceiverId().then((chatUserProducts) {
-      setState(() {
-        this.chatUserProducts = chatUserProducts;
-      });
-    });
   }
 
   final AuthService authService = AuthService();
@@ -37,25 +34,6 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text('HolX'),
-        actions: <Widget>[
-          IconButton(
-            icon: Icon(Icons.exit_to_app),
-            onPressed: () async {
-              try {
-                await authService.logout();
-                Navigator.of(context).pushReplacementNamed('/login');
-              } catch (e) {
-                print('Logout error: $e');
-              }
-            },
-          ),
-          IconButton(
-            icon: Icon(Icons.add),
-            onPressed: () {
-              Navigator.of(context).pushNamed('/addproduct');
-            },
-          ),
-        ],
         backgroundColor: Color(0xff3EB489),
       ),
       backgroundColor: Theme.of(context).backgroundColor,
@@ -72,76 +50,25 @@ class _HomeScreenState extends State<HomeScreen> {
             return Center(child: Text('Error: ${snapshot.error}'));
           } else if (snapshot.hasData) {
             final List<Product> productList = snapshot.data!;
-            return SingleChildScrollView(
-              child: Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(10.0),
-                    child: GridView.builder(
-                      shrinkWrap: true,
-                      physics: NeverScrollableScrollPhysics(),
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 2,
-                          crossAxisSpacing: 0.1,
-                          mainAxisSpacing: 0.1),
-                      itemCount: productList.length,
-                      itemBuilder: (context, index) {
-                        final prod = productList[index];
-                        return GestureDetector(
-                          onTap: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        ProductDetail(prod: prod)));
-                          },
-                          child: Container(
-                            height: 300,
-                            child: Card(
-                              semanticContainer: true,
-                              clipBehavior: Clip.antiAliasWithSaveLayer,
-                              color: Theme.of(context).backgroundColor,
-                              elevation: 3,
-                              margin: EdgeInsets.all(10),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(6.0),
-                                side: BorderSide(
-                                    width: 1.3, color: Color(0xff333333)),
-                              ),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.stretch,
-                                children: [
-                                  AspectRatio(
-                                    aspectRatio: 1.5,
-                                    child: Image.network(prod.imageUrl,
-                                        fit: BoxFit.contain),
-                                  ),
-                                  Padding(
-                                    padding: EdgeInsets.all(8),
-                                    child: Align(
-                                      alignment: Alignment.center,
-                                      child: Text(
-                                        prod.name,
-                                        style: GoogleFonts.raleway(
-                                          textStyle: TextStyle(
-                                            fontSize: 15,
-                                            fontWeight: FontWeight.bold,
-                                            color: Color(0xff333333),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        );
-                      },
-                    ),
-                  ),
-                ],
-              ),
+            final int itemCount = productList.length;
+            return PageView.builder(
+              controller: _pageController,
+              itemCount: itemCount + 2,
+              itemBuilder: (context, index) {
+                final int pageIndex = index % itemCount;
+                final prod = productList[pageIndex];
+                currprod = productList[pageIndex];
+                return ProductDetail(prod: prod);
+              },
+              onPageChanged: (index) {
+                print("Page changed to: $index");
+                final int currentPageIndex = index % itemCount;
+                if (currentPageIndex == 0) {
+                  _pageController.jumpToPage(itemCount);
+                } else if (currentPageIndex == itemCount + 1) {
+                  _pageController.jumpToPage(1);
+                }
+              },
             );
           } else {
             return Center(
@@ -150,18 +77,12 @@ class _HomeScreenState extends State<HomeScreen> {
           }
         },
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) =>
-                    ChatThread(chatUserProducts: chatUserProducts)),
-          );
-        },
-        child: Icon(Icons.chat),
-        backgroundColor: Color(0xff3EB489),
-      ),
     );
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
   }
 }

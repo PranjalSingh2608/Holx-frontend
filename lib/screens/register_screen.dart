@@ -83,6 +83,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       Navigator.of(context).pushReplacementNamed('/login');
                     } catch (e) {
                       print('Registration error: $e');
+              
                     }
                   },
             child: Container(
